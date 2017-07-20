@@ -9,6 +9,7 @@
 
 namespace App\Services\ApiServer;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,6 +38,7 @@ class Server
     }
 
     public function run(){
+        Log::info('开始请求');
         $rules = [
             'app_id' => 'required',
             'method' => 'required',
