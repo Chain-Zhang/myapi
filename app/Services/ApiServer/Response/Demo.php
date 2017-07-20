@@ -15,12 +15,13 @@ class Demo extends BaseResponse implements InterfaceResponse
 
 
     public function run(&$params){
-        return [
-            'status' => true,
-            'code'   => '200',
-            'data'   => [
-                'current_time' => date('Y-m-d H:i:s')
-            ]
-        ];
+//        return [
+//            'status' => true,
+//            'code'   => '200',
+//            'data'   => [
+//                'current_time' => date('Y-m-d H:i:s')
+//            ]
+//        ];
+        return $params;
     }
 }

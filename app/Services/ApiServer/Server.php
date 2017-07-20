@@ -38,7 +38,8 @@ class Server
     }
 
     public function run(){
-        Log::info('开始请求');
+        Log::info('请求参数:');
+        Log::info($this->params);
         $rules = [
             'app_id' => 'required',
             'method' => 'required',
