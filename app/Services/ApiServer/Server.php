@@ -37,7 +37,7 @@ class Server
         $this->error = $error;
     }
 
-    public function run(){
+    public function run($category){
         Log::info('请求参数:');
         Log::info($this->params);
         $rules = [
@@ -90,23 +90,30 @@ class Server
         // D. 校验接口名
         // D.1 通过方法名获取类名
         $className = self::getClassName($this->method);
+        $methodName = self::getMethod($this->method);
 
         // D.2 判断类名是否存在
-        $classPath = __NAMESPACE__ . '\\Response\\' . $className;
+        if (empty($category))
+            $classPath = __NAMESPACE__ . '\\Response\\' . $className;
+        else
+            $classPath = __NAMESPACE__ . '\\Response\\' . $category . '\\' . $className;
+        Log::info('class path: ' . $classPath);
         if (!$className || !class_exists($classPath)) {
             return $this->response(['status' => false, 'code' => '1008']);
         }
 
+
         // D.3 判断方法是否存在
-        if (! method_exists($classPath, 'run')) {
+        if (! method_exists($classPath, $methodName)) {
             return $this->response(['status' => false, 'code' => '1009']);
         }
 
         $this->classname = $classPath;
 
         // E. api接口分发
-        $class = new $classPath;
-        return $this->response((array) $class->run($this->params));
+        return $this->response((array) call_user_func(array(
+            $classPath, $methodName
+        ),$this->params));
     }
 
     /**
@@ -169,8 +176,10 @@ class Server
      */
     protected function getClassName($method)
     {
-        $methods = explode('.', $method);
-
+        $arr = explode('.', $method);
+        if (!is_array($arr) || count($arr) != 2)
+            return false;
+        $methods = explode('-', $arr[0]);
         if (!is_array($methods))
             return false;
 
@@ -180,7 +189,28 @@ class Server
         }
 
         $className = implode('', $tmp);
+        Log::info('class name: '. $className);
         return $className;
+    }
+
+    protected function getMethod($method){
+        $arr = explode('.', $method);
+        if (!is_array($arr) || count($arr) != 2)
+            return false;
+
+        $methods = explode('-', $arr[1]);
+
+        if (!is_array($methods))
+            return false;
+
+        $tmp = array();
+        foreach ($methods as $value) {
+            $tmp[] = ucwords($value);
+        }
+
+        $methodName = implode('', $tmp);
+        Log::info('method name: '. $methodName);
+        return $methodName;
     }
 
     /**

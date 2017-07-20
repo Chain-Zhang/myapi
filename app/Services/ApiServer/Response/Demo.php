@@ -9,12 +9,12 @@
 namespace App\Services\ApiServer\Response;
 
 
-class Demo extends BaseResponse implements InterfaceResponse
+class Demo
 {
     protected $method = 'demo';
 
 
-    public function run(&$params){
+    public static function run($params){
 //        return [
 //            'status' => true,
 //            'code'   => '200',

@@ -19,5 +19,7 @@ Route::get('/', function () {
 Route::get('get_users', 'TestController@get_users');
 
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
-    Route::any('router', 'RouterController@index');  // API 入口
+    Route::any('/', 'RouterController@index');  // API 入口
+    Route::any('test', 'RouterController@test');  // API 入口
+    Route::any('music', 'RouterController@music');  // API 入口
 });

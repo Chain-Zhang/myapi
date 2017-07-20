@@ -18,6 +18,18 @@ class RouterController extends Controller
     public function index()
     {
         $server = new Server(new Error());
-        return $server->run();
+        return $server->run('');
+    }
+
+    public function test()
+    {
+        $server = new Server(new Error());
+        return $server->run('Test');
+    }
+
+    public function music()
+    {
+        $server = new Server(new Error());
+        return $server->run('Music');
     }
 }
