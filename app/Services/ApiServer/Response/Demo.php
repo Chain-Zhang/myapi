@@ -11,17 +11,12 @@ namespace App\Services\ApiServer\Response;
 
 class Demo
 {
-    protected $method = 'demo';
-
-
     public static function run($params){
-//        return [
-//            'status' => true,
-//            'code'   => '200',
-//            'data'   => [
-//                'current_time' => date('Y-m-d H:i:s')
-//            ]
-//        ];
-        return $params;
+        return [
+            'status' => true,
+            'code'   => '200',
+            'data'   => $params,
+            'msg'    => 'success'
+        ];
     }
 }
