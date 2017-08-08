@@ -9,6 +9,8 @@
 namespace App\Services\ApiServer\Response\Music;
 
 
+use App\Models\Song;
+
 class Music
 {
     public static function run($params){
@@ -18,20 +20,41 @@ class Music
     }
 
     public static function query($params){
-        $keyword = $params['keyword'];
-        if(!empty($keyword)){
-            $url = 'http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.catalogSug&query=' . $keyword;
-            $html = file_get_contents($url);
-            $songs = array();
-            for($i = 0; $i < $html->song->count(); $i++){
-                array_push($songs, {'name':$html->song[$i]->songname, 'singer':$html->song[$i]->artistname})
+        if(isset($params['keyword'])){
+            $keyword = $params['keyword'];
+            if(!empty($keyword)){
+                $url = 'http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.catalogSug&query=' . $keyword;
+                $html = file_get_contents($url);
+                $songs = array();
+                foreach(json_decode($html)->song as $item){
+                    $song = new Song();
+                    $song->name = $item->songname;
+                    $song->singer = $item->artistname;
+                    $song->id = $item->songid;
+                    array_push($songs, $song);
+                }
+                return [
+                    'code'=>'200',
+                    'data'=>$songs,
+                    'msg'=>'success',
+                    'status'=>true
+                ];
             }
+            else{
+                return [
+                    'code' => '2001',
+                    'msg' => 'keyword不能为空',
+                    'status' => false
+                ];
+            }
+        }
+        else{
             return [
-                'code'=>'200',
-                'data'=>$songs,
-                'msg'=>'success',
-                'status'=>true
+                'code' => '2002',
+                'msg' => '缺少keyword参数',
+                'status' => false
             ];
         }
+
     }
 }
