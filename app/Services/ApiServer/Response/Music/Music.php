@@ -57,4 +57,41 @@ class Music
         }
 
     }
+
+    public static function play($params){
+        if(isset($params['id'])){
+            $id = $params['id'];
+            if(!empty($id)){
+                $url = "http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.play&songid=". $id;
+                $data = json_decode( file_get_contents($url));
+                $song = new Song();
+                $song->name = $data->songinfo->title;
+                $song->id = $data->songinfo->song_id;
+                $song->singer = $data->songinfo->author;
+                $song->src = $data->bitrate->file_link;
+                $song->lrc = $data->songinfo->lrclink;
+                $song->pic_small = $data->songinfo->pic_small;
+                $song->pic_big = $data->songinfo->pic_big;
+                $song->pic_premium = $data->songinfo->pic_premium;
+                return [
+                    'code'=>'200',
+                    'data'=>$song,
+                    'msg'=>'success',
+                    'status'=>true
+                ];
+            }else{
+                return [
+                    'code' => '2004',
+                    'msg' => 'id不能为空',
+                    'status' => false
+                ];
+            }
+        }else{
+            return [
+                'code' => '2003',
+                'msg' => '缺少id参数',
+                'status' => false
+            ]
+        }
+    }
 }
