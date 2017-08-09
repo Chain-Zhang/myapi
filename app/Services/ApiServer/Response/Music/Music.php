@@ -91,7 +91,7 @@ class Music
                 'code' => '2003',
                 'msg' => '缺少id参数',
                 'status' => false
-            ]
+            ];
         }
     }
 }
